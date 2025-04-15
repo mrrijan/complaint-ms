@@ -23,7 +23,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-
+        @if ($errors->setPassword->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->setPassword->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="card shadow-sm">
             <div class="card-body">
                 <h4 class="card-title mb-4">User Profile</h4>
@@ -31,13 +40,55 @@
                 <p><strong>Name:</strong> {{ $user->name }}</p>
                 <p><strong>Email:</strong> {{ $user->email }}</p>
 
-                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                    Change Password
-                </button>
+{{--                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">--}}
+{{--                    Change Password--}}
+{{--                </button>--}}
+                @if(auth()->user()->provider === 'google')
+                    <div class="alert alert-info">
+                        You logged in using Google. Since you don’t have a password, you can set one below.
+                    </div>
+
+                    {{-- Show Set Password Form --}}
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#setPasswordModal">
+                        Set Password
+                    </button>
+                @else
+                    {{-- Show Change Password Form --}}
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        Change Password
+                    </button>
+                @endif
             </div>
         </div>
     </div>
-
+    <!-- Set Password Modal -->
+    <div class="modal fade" id="setPasswordModal" tabindex="-1" aria-labelledby="setPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ url('/set-password') }}">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="setPasswordModalLabel">Set Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Set Password</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- Change Password Modal -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog">

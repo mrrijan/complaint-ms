@@ -2,7 +2,6 @@
 @section('page-title', 'Log In')
 @section('auth-body')
     <p class="text-center mb-4">{{ __('Log in to start your session') }}</p>
-
     <form id="loginForm" action="{{ route('login') }}" method="POST">
         @csrf
         <div class="mb-3">
@@ -30,4 +29,19 @@
             <button type="submit" class="btn btn-primary">{{ __('Log In') }}</button>
         </div>
     </form>
+    {{-- Divider --}}
+    <div class="text-center text-muted mb-3">
+        — or —
+    </div>
+    
+    {{-- Social Login --}}
+    <div class="d-grid mb-3">
+        <a href="{{ url('/auth/google') }}" class="btn btn-outline-dark">
+            <i class="fab fa-google me-2"></i> Log in with Google
+        </a>
+    </div>
+
+
+
+
 @endsection

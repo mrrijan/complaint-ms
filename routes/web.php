@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(["auth:sanctum"])->get('/',[DashboardController::class,'index']);
@@ -45,3 +46,9 @@ Route::middleware(["auth:sanctum"])->post("/complaint/update/{complaint_id}", [C
 Route::middleware(["auth:sanctum"])->delete("/complaint/delete/{complaint_id}", [ComplaintController::class, 'destroy']);
 Route::middleware(["auth:sanctum"])->get("/profile",[DashboardController::class,'profile']);
 Route::middleware(["auth:sanctum"])->post("/password-change",[PasswordController::class,'update']);
+Route::middleware(["auth:sanctum"])->post('/set-password', [PasswordController::class, 'setPassword']);
+
+
+//for oauth
+Route::get('auth/google', [OAuthController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [OAuthController::class, 'handleGoogleCallback']);
