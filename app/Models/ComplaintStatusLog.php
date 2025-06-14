@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComplaintStatusLog extends Model
 {
+    protected $guarded = [];
+    
     public function complaint()
     {
         return $this->belongsTo(Complaint::class);

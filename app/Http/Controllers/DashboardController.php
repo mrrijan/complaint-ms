@@ -10,7 +10,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $userId = Auth::id();
+        $user = Auth::user();
+
+        $userId = $user->id;
 
         // Status data
         $statusCounts = Complaint::select('status', \DB::raw('count(*) as total'))
@@ -30,7 +32,11 @@ class DashboardController extends Controller
         $resolvedCount = Complaint::where('user_id', $userId)->where('status', 'resolved')->count();
         $pendingCount = Complaint::where('user_id', $userId)->where('status', 'pending')->count();
 
-        return view('frontend.pages.index', compact('statusCounts', 'typeCounts', 'totalComplaints', 'resolvedCount', 'pendingCount'));
+        if ($user->role === "user") {
+            return view('frontend.pages.index', compact('statusCounts', 'typeCounts', 'totalComplaints', 'resolvedCount', 'pendingCount'));
+        } else {
+            return redirect("/admin/complaints");
+        }
     }
 
     public function profile()

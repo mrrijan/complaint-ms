@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ComplaintTypeStoreRequest;
+use App\Http\Requests\ComplaintTypeUpdateRequest;
+use App\Models\Complaint;
 use App\Models\ComplaintType;
 use Illuminate\Http\Request;
 
@@ -12,7 +15,8 @@ class ComplaintTypeController extends Controller
      */
     public function index()
     {
-        //
+        $complaintTypes = ComplaintType::all();
+        return view("admin.complaint_type", compact("complaintTypes"));
     }
 
     /**
@@ -26,9 +30,13 @@ class ComplaintTypeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ComplaintTypeStoreRequest $request)
     {
-        //
+        ComplaintType::create([
+            "name" => $request->name
+        ]);
+
+        return redirect()->back();
     }
 
     /**
@@ -50,16 +58,24 @@ class ComplaintTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ComplaintType $complaintType)
+    public function update(ComplaintTypeUpdateRequest $request, $complaint_type_id)
     {
-        //
+        $complaintType = ComplaintType::where("id", $complaint_type_id)->first();
+
+        $complaintType->name = $request->name;
+        $complaintType->save();
+
+        return redirect()->back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ComplaintType $complaintType)
+    public function destroy($complaint_type_id)
     {
-        //
+        $complaintType = ComplaintType::where("id", $complaint_type_id)->first();
+        $complaintType->delete();
+
+        return redirect()->back();
     }
 }

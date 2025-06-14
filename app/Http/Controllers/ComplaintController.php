@@ -10,10 +10,11 @@ use App\Models\ComplaintType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Models\ComplaintStatusLog;
 
 class ComplaintController extends Controller
 {
-    /**
+    /**R
      * Display a listing of the resource.
      */
     public function index()
@@ -26,6 +27,37 @@ class ComplaintController extends Controller
         return view("frontend.pages.complaints", compact("complaints", "types"));
     }
 
+    public function updateComplaint(Request $request)
+    {
+        $complaint = Complaint::where("id", $request->complaint_id)->first();
+
+        // Log status change
+        if ($complaint->status !== $request->status) {
+            ComplaintStatusLog::create([
+                'complaint_id' => $complaint->id,
+                'changed_by' => Auth::user()->id,
+                'old_status' => $complaint->status,
+                'new_status' => $request->status,
+                'remark' => $request->remark,
+            ]);
+        }
+
+        $complaint->status = $request->status;
+        $complaint->admin_remark = $request->remark;
+        $complaint->save();
+
+        return redirect("/admin/complaints");
+    }
+    public function getAdminComplaints()
+    {
+        $complaints = Complaint::latest()->paginate(7);
+        $types = ComplaintType::all();
+        return view("admin.complaints", compact("complaints", "types"));
+    }
+    // public function adminDashboard()
+    // {
+    //     return view("admin.app");
+    // }
     /**
      * Show the form for creating a new resource.
      */
@@ -60,7 +92,6 @@ class ComplaintController extends Controller
         Mail::to(Auth::user()->email)->send(new ComplaintSubmittedMail($complaint));
 
         return redirect()->back();
-
     }
 
     /**
@@ -72,6 +103,11 @@ class ComplaintController extends Controller
         return view("frontend.pages.complaint", compact("complaint"));
     }
 
+    public function viewComplaint($complaint_id)
+    {
+        $complaint = Complaint::where("id", $complaint_id)->first();
+        return view("admin.complaint", compact("complaint"));
+    }
     /**
      * Show the form for editing the specified resource.
      */

@@ -12,7 +12,8 @@ class ComplaintStatusLogController extends Controller
      */
     public function index()
     {
-        //
+        $complaintStatuses = ComplaintStatusLog::with(["complaint", "changedBy"])->latest()->paginate(7);
+        return view("admin.complaint_status_log", compact("complaintStatuses"));
     }
 
     /**
