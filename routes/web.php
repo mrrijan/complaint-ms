@@ -55,7 +55,7 @@ Route::get('auth/google', [OAuthController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [OAuthController::class, 'handleGoogleCallback']);
 
 //for admin
-// Route::get("/admin/dashboard", [ComplaintController::class, "adminDashboard"]);
+// Route::get("/admin/dashboard", [DashboardController::class, "adminDashboard"]);
 Route::middleware(["auth:sanctum"])->get("/admin/complaints", [ComplaintController::class, 'getAdminComplaints']);
 Route::middleware(["auth:sanctum"])->get("/admin/complaint/change-status/{complaint_id}", [ComplaintController::class, 'viewComplaint']);
 Route::middleware(["auth:sanctum"])->put("/admin/complaint/update", [ComplaintController::class, 'updateComplaint']);
@@ -66,3 +66,4 @@ Route::middleware(["auth:sanctum"])->post("/admin/complaint-types/store", [Compl
 Route::middleware(["auth:sanctum"])->put("/admin/complaint-types/update/{complaint_type_id}", [ComplaintTypeController::class, 'update']);
 Route::middleware(["auth:sanctum"])->delete("/admin/complaint-type/delete/{complaint_type_id}", [ComplaintTypeController::class, 'destroy']);
 Route::middleware(["auth:sanctum"])->get("/admin/complaint-logs", [ComplaintStatusLogController::class, 'index']);
+Route::get('/admin/logs/export', [ComplaintStatusLogController::class, 'exportLogs'])->name('admin.logs.export');

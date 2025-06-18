@@ -85,6 +85,9 @@
     <div class="sidebar border-end">
         <ul class="nav flex-column">
             <li class="nav-item">
+                <a class="nav-link" href={{url("/") }}>Dashboard</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{url("/admin/complaints")}}">Complaints</a>
             </li>
              <li class="nav-item">

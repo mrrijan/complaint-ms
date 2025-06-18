@@ -32,10 +32,25 @@ class DashboardController extends Controller
         $resolvedCount = Complaint::where('user_id', $userId)->where('status', 'resolved')->count();
         $pendingCount = Complaint::where('user_id', $userId)->where('status', 'pending')->count();
 
+        // Total complaint count
+        $totalComplaintsAdmin = Complaint::count();
+
+        // Status-wise complaint count (for Pie/Donut or Bar)
+        $statusCountsAdmin = Complaint::select('status', \DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        // Type-wise complaint count (Bar/Pie)
+        $typeCountsAdmin = \DB::table('complaints')
+            ->join('complaint_types', 'complaints.type_id', '=', 'complaint_types.id')
+            ->select('complaint_types.name', \DB::raw('count(*) as total'))
+            ->groupBy('complaint_types.name')
+            ->pluck('total', 'name');
+
         if ($user->role === "user") {
             return view('frontend.pages.index', compact('statusCounts', 'typeCounts', 'totalComplaints', 'resolvedCount', 'pendingCount'));
         } else {
-            return redirect("/admin/complaints");
+            return view("admin.index", compact("totalComplaintsAdmin", "statusCountsAdmin", "typeCountsAdmin"));
         }
     }
 
@@ -43,5 +58,25 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         return view('frontend.pages.profile', compact('user'));
+    }
+
+    public function adminDashboard()
+    {
+        // Total complaint count
+        $totalComplaintsAdmin = Complaint::count();
+
+        // Status-wise complaint count (for Pie/Donut or Bar)
+        $statusCountsAdmin = Complaint::select('status', \DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        // Type-wise complaint count (Bar/Pie)
+        $typeCountsAdmin = \DB::table('complaints')
+            ->join('complaint_types', 'complaints.type_id', '=', 'complaint_types.id')
+            ->select('complaint_types.name', \DB::raw('count(*) as total'))
+            ->groupBy('complaint_types.name')
+            ->pluck('total', 'name');
+
+        return view("admin.index", compact("totalComplaintsAdmin", "statusCountsAdmin", "typeCountsAdmin"));
     }
 }

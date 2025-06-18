@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ComplaintStatusLog;
 use Illuminate\Http\Request;
+use App\Exports\ComplaintStatusLogsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ComplaintStatusLogController extends Controller
 {
@@ -24,6 +26,10 @@ class ComplaintStatusLogController extends Controller
         //
     }
 
+    public function exportLogs()
+    {
+        return Excel::download(new ComplaintStatusLogsExport, 'complaint_status_logs.xlsx');
+    }
     /**
      * Store a newly created resource in storage.
      */

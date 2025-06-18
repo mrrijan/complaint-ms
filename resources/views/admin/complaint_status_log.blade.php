@@ -39,6 +39,9 @@
                     @endforeach
                     </tbody>
                 </table>
+                <a href="{{ route('admin.logs.export') }}" class="btn btn-success mb-3 mx-2">
+                    Export to Excel
+                </a>
                 <div class="mt-3 d-flex justify-content-start">
                     {{ $complaintStatuses->links() }}
                 </div>
